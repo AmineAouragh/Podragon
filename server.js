@@ -1,5 +1,5 @@
-require('dotenv').config()
 const axios = require('axios')
+require('dotenv').config()
 
 const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
 const SPOTIFY_CLIENT_SECRET = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET
@@ -31,7 +31,7 @@ async function searchPodcasts(keyword){
             limit: 10
         }
     })
-    return response.data.show.items
+    return response.data.shows.items
 }
 
 searchPodcasts('comedy').then(podcasts => {
