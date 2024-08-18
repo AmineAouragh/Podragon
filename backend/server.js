@@ -1,7 +1,5 @@
-const express = require("express")
 require('dotenv').config()
 const axios = require('axios')
-
 
 const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
 const SPOTIFY_CLIENT_SECRET = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET
@@ -21,13 +19,23 @@ async function getSpotifyApiAccessToken(){
     return response.data.access_token
 }
 
-const app = express()
+async function searchPodcasts(keyword){
+    const token = await getSpotifyApiAccessToken()
+    const response = await axios.get('https://api.spotify.com/v1/search', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        params: {
+            q: keyword,
+            type: 'show',
+            limit: 10
+        }
+    })
+    return response.data.show.items
+}
 
-app.use((req, res) => {
-    res.status(200).send("Hello, world!")
-})
-
-const PORT = process.env.PORT || 8080
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`)
+searchPodcasts('comedy').then(podcasts => {
+    console.log(podcasts)
+}).catch(err => {
+    console.error("An error was encountered when trying to search for podcasts", err)
 })
