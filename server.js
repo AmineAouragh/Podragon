@@ -21,21 +21,18 @@ async function getSpotifyApiAccessToken(){
 
 async function searchPodcasts(keyword){
     const token = await getSpotifyApiAccessToken()
-    const response = await axios.get('https://api.spotify.com/v1/search', {
+    const search_keyword = encodeURI(keyword)
+    const response = await axios.get(`https://api.spotify.com/v1/search?q=${search_keyword}&type=show&limit=10`, {
         headers: {
-            'Authorization': `Bearer ${token}`
-        },
-        params: {
-            q: keyword,
-            type: 'show',
-            limit: 10
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
         }
     })
     return response.data.shows.items
 }
 
-searchPodcasts('comedy').then(podcasts => {
-    console.log(podcasts)
-}).catch(err => {
+searchPodcasts('true crime').then(podcasts => console.log(podcasts)
+)
+.catch(err => {
     console.error("An error was encountered when trying to search for podcasts", err)
 })
