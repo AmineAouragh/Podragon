@@ -1,11 +1,16 @@
 const axios = require('axios')
+const express = require('express')
 require('dotenv').config()
+
+const app = express()
+
 
 const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
 const SPOTIFY_CLIENT_SECRET = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET
 
 async function getSpotifyApiAccessToken(){
-    const response = await axios.post('https://accounts.spotify.com/api/token',
+    const token_url = "https://accounts.spotify.com/api/token"
+    const response = await axios.post(token_url,
         new URLSearchParams({
             grant_type: 'client_credentials'
         }),
@@ -19,10 +24,10 @@ async function getSpotifyApiAccessToken(){
     return response.data.access_token
 }
 
-async function searchPodcasts(keyword){
+export async function searchPodcasts(keyword){
     const token = await getSpotifyApiAccessToken()
-    const search_keyword = encodeURI(keyword)
-    const response = await axios.get(`https://api.spotify.com/v1/search?q=${search_keyword}&type=show&limit=10`, {
+    const search_keyword = encodeURIComponent(keyword)
+    const response = await axios.get(`https://api.spotify.com/v1/search?q=${search_keyword}&type=show&limit=10&market=US`, {
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -31,8 +36,4 @@ async function searchPodcasts(keyword){
     return response.data.shows.items
 }
 
-searchPodcasts('true crime').then(podcasts => console.log(podcasts)
-)
-.catch(err => {
-    console.error("An error was encountered when trying to search for podcasts", err)
-})
+
