@@ -1,7 +1,19 @@
 import Image from "next/image"
 import { PODCAST_KEYWORDS } from "./api/keywords"
+import { useState } from 'react'
 
 export default function Home() {
+  const [ podcasts, setPodcasts ] = useState([])
+  const handleSearch = async keyword => {
+    try {
+      const response = await fetch(`/api/search-podcasts/${keyword}`)
+      const data = await response.json()
+      console.log(data)
+      setPodcasts(data)
+    } catch (error){
+      console.error("Error fetching podcasts: ", error)
+    }
+  }
   return (
     <div className="flex flex-col justify-center absolute items-center h-full w-full p-4">
       <h2 className="text-2xl mb-4 text-center">🎙 Podragon 🎙</h2>
@@ -11,16 +23,11 @@ export default function Home() {
       {
         PODCAST_KEYWORDS.map(
           keyword => 
-          <button type="button" className="border-2 m-2 text-2xl font-bold hover:bg-gray-900 hover:text-gray-50 border-gray-800 rounded-3xl shadow-lg px-4 py-3" key={keyword}>
+          <button type="button" onClick={() => handleSearch(keyword)} className="border-2 m-2 text-2xl font-bold hover:bg-gray-900 hover:text-gray-50 border-gray-800 rounded-3xl shadow-lg px-4 py-3" key={keyword}>
             {keyword}
           </button>
         )
       }
-      </div>
-      <div className="flex flex-row items-center justify-between mt-12">
-        <div className="w-1/2">
-        </div>
-        <button type="button" className="border-2 border-gray-900 bg-gray-900 rounded-3xl px-4 py-3 text-gray-50 text-2xl font-bold">Confirm</button>
       </div>
     </div>
   )
