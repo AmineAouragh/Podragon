@@ -1,6 +1,7 @@
 const axios = require('axios')
 const express = require('express')
 require('dotenv').config()
+import { insertPodcasts } from './backend/db'
 
 const app = express()
 
@@ -33,8 +34,13 @@ export async function searchPodcasts(keyword){
             'Content-Type': 'application/json'
         }
     })
-    return response.data.shows.items
+    const podcasts = response.data.shows.items 
+
+    await insertPodcasts(podcasts)
+    return podcasts 
 }
+
+export async function 
 
 
 app.listen(3001, () => {
