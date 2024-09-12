@@ -40,9 +40,6 @@ export async function searchPodcasts(keyword){
     return podcasts 
 }
 
-export async function 
-
-
 app.listen(3001, () => {
     console.log("Server listening at port 3001");
 });
